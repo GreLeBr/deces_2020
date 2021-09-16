@@ -1,12 +1,12 @@
 ## Analyzing deaths in France in 2020
-`
+
 You can use the [editor on GitHub](https://github.com/GreLeBr/deces_2020/edit/master/docs/index.md) to maintain and preview the content for your website in Markdown files.
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-`
+
 ### Age pyramid of deaths in France
 
-```
+`
 # Building categories for age group
 bins = pd.IntervalIndex.from_tuples([(0, 5), (5, 10), (10, 15), (15,20),(20,25), (25,30), (30,35), (35,40), (40,45), (45,50), (50, 55),(55, 60), (60,65), (65,70), (70,75), (75, 80), (80,85), (85, 90), (90, 95), (95,100), (105,110), (110,115) ])
 
@@ -61,7 +61,7 @@ props = dict(boxstyle='round', facecolor='yellow', alpha=0.5)
 bar_plot.text(50000, 20, "Men", fontsize=25,bbox=props )
 bar_plot.text(-50000, 20, "Women", fontsize=25, bbox=props )
 
-```
+`
 
 ```markdown
 Syntax highlighted code block
@@ -90,3 +90,4 @@ Your Pages site will use the layout and styles from the Jekyll theme you have se
 ### Support or Contact
 
 Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+```
