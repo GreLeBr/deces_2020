@@ -1,13 +1,14 @@
-import numpy as np
+# import numpy as np
 import pandas as pd
+import os
 
 # Load the CSV needed
 
 def get_data():    
-    df= pd.read_csv("/raw_data/deces_2020.csv", sep=";", encoding="utf-8")
-    communes=pd.read_csv("/raw_data/commune2021.csv")
-    movement=pd.read_csv("/raw_data/mvtcommune2021.csv")
-    pays=pd.read_csv("/raw_data/pays2021.csv")
+    df= pd.read_csv("../raw_data/deces_2020.csv", sep=";", encoding="utf-8")
+    communes=pd.read_csv("../raw_data/commune2021.csv")
+    movement=pd.read_csv("../raw_data/mvtcommune2021.csv")
+    pays=pd.read_csv("../raw_data/pays2021.csv")
     return df, communes, movement, pays
 
 def attribute_countries(df,communes,movement,pays):
@@ -202,3 +203,10 @@ def attribute_countries(df,communes,movement,pays):
     df["lieunaiss_str"]=df["lieunaiss_str"].apply(lambda x: dict_value[x] if x in dict_value.keys() else x)
 
     return df
+
+if __name__ == '__main__':
+    df, communes, movement, pays = get_data()
+    df= attribute_countries(df,communes,movement,pays)    
+    path = os.getcwd()
+    filename="_treated"
+    df.to_csv(path+filename+".csv")
