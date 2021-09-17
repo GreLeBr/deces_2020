@@ -6,7 +6,9 @@ Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://j
 
 ### Age pyramid of deaths in France
 
-`
+
+
+```python
 # Building categories for age group
 bins = pd.IntervalIndex.from_tuples([(0, 5), (5, 10), (10, 15), (15,20),(20,25), (25,30), (30,35), (35,40), (40,45), (45,50), (50, 55),(55, 60), (60,65), (65,70), (70,75), (75, 80), (80,85), (85, 90), (90, 95), (95,100), (105,110), (110,115) ])
 
@@ -61,9 +63,15 @@ props = dict(boxstyle='round', facecolor='yellow', alpha=0.5)
 bar_plot.text(50000, 20, "Men", fontsize=25,bbox=props )
 bar_plot.text(-50000, 20, "Women", fontsize=25, bbox=props )
 
-`
 
-```markdown
+``` 
+
+[Predict age by name](https://www.ekintzler.com/projects/age-prediction/)
+[Choropleth on Heroku](https://choropleth-greg.herokuapp.com/)
+[Choropleth on GitHub](https://grelebr.github.io/deces_2020/choropleth.html)
+
+
+markdown
 Syntax highlighted code block
 
 # Header 1
@@ -90,4 +98,4 @@ Your Pages site will use the layout and styles from the Jekyll theme you have se
 ### Support or Contact
 
 Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
-```
+
