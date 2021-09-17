@@ -1,29 +1,22 @@
 ## Analyzing deaths in France in 2020
 
-The [National Institute of Statistics and Economic Studies](https://www.insee.fr/en/accueil) 
-releases public available data on deaths in France every year. 
-It is a popular datafile to work with and there are many projects using and tools available to explore
-the file at [data.gouve.fr](https://www.data.gouv.fr/fr/datasets/fichier-des-personnes-decedees/)
+* The [National Institute of Statistics and Economic Studies](https://www.insee.fr/en/accueil) 
+releases public available data on deaths in France every year. It is a popular datafile to work with and there are many projects using and tools available to explore the file at [data.gouv.fr](https://www.data.gouv.fr/fr/datasets/fichier-des-personnes-decedees/)
 
-I tried my hand at organizing the data and use a few vizualization techniques I will expose here.
+* I tried my hand at organizing the data and use a few vizualization techniques I will expose here.
 
 The raw file lacks for most of the entries a country of birth and I filled it accordingly to the birth location matching how the coding for it evolved over time. 
 The process can be replicated after collecting the required csv files available at 
-[Insee files](https://www.insee.fr/fr/information/2560452) 
-
-using [clean_INSEE_csv.py.py](https://github.com/GreLeBr/deces_2020/blob/master/deces_2020/clean_INSEE_csv.py
+[Insee files](https://www.insee.fr/fr/information/2560452) using [clean_INSEE_csv.py.py](https://github.com/GreLeBr/deces_2020/blob/master/deces_2020/clean_INSEE_csv.py)
 
 
 ### Age pyramid of deaths in France
 
-Deaths are categorized in group spanning a range of 5 years by using a bins variable and cutting the 
-dataframe accordingly.
-Age of the person deceased is calculated by substrating day of death to day of birth, the results is left 
-as years for easier classfication. 
-The dataframe is further groupby using the sex variable.  
+* Deaths are categorized in group spanning a range of 5 years by using a bins variable and cutting the 
+dataframe accordingly. Age of the person deceased is calculated by substrating day of death to day of birth, the results is left as years for easier classfication. The dataframe is further groupby using the sex variable.  
 
 ![Age pyramid](age_pyramid.png)
-Format: ![Alt Text](url)
+
 
 ```python
 # Building categories for age group
@@ -98,22 +91,24 @@ bar_plot.text(-50000, 20, "Women", fontsize=25, bbox=props )
 ``` 
 
 [Predict age by name](https://www.ekintzler.com/projects/age-prediction/)
-
+<!-- 
 <iframe src=https://grelebr.github.io/deces_2020/choropleth.html style="width: 500px;
-height: 800px; border: 0px"></iframe>
+height: 800px; border: 0px"></iframe> -->
 
 
 [Choropleth on GitHub](https://grelebr.github.io/deces_2020/choropleth.html)
+
 [Choropleth on Heroku](https://choropleth-greg.herokuapp.com/)
+
 [Insee files](https://www.insee.fr/fr/information/2560452)
 
 
 
 
-
+``` python
 # Splitting First name and last name
 df["nomprenomsplit"]=df["nomprenom"].apply(lambda x: x.split("*"))
 df["nom"]=df["nomprenomsplit"].apply(lambda x: x[0])
 df["prenom"]=df["nomprenomsplit"].apply(lambda x: x[1])
 df["prenom"]=df["prenom"].apply(lambda x: x.replace("/", ""))
-
+``` 
