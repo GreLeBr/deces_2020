@@ -113,6 +113,10 @@ Code is as follow :
 
 ```
 
+{% include choropleth.html %}
+
+
+
 [Predict age by name](https://www.ekintzler.com/projects/age-prediction/)
 <!-- 
 <iframe src=https://grelebr.github.io/deces_2020/choropleth.html style="width: 500px;
