@@ -90,21 +90,26 @@ bar_plot.text(-50000, 20, "Women", fontsize=25, bbox=props )
 
 ``` 
 
-Following popular blog [Le prénom : catégorie sociale](http://coulmont.com/bac/index.html)
+### What is the average age of people dying according to their first or last name?
+
+Following popular blog [Le prénom : catégorie sociale](http://coulmont.com/bac/index.html) ,
 I plotted first_name by age of deaths as well as last_name by age of death.
+
+HOWEVER !!! These vizualisations need to be taken with a big grain of salts as not all first_name are equivalent. Some names were popular in the early 20th century while other are more recents and it has a direct effect on the average age of death associated with a first_name. 
+I will describe this issue in more details further down the page. 
 
 Using first name:
 {% include prenom_france.html %}
-[First_name](https://chart-studio.plotly.com/~GreLeBr/13)
+<!-- [First_name](https://chart-studio.plotly.com/~GreLeBr/13) -->
 
 
 and specficically for people born abroad: 
 {% include prenom_horsfrance.html %}
-[First_name_abroad](https://chart-studio.plotly.com/~GreLeBr/3)
+<!-- [First_name_abroad](https://chart-studio.plotly.com/~GreLeBr/3) -->
 
 With the last name :
 {% include nom.html %}
-[Last_name](https://chart-studio.plotly.com/~GreLeBr/11)
+<!-- [Last_name](https://chart-studio.plotly.com/~GreLeBr/11) -->
 
 and included the gender
 {% include nom_sex.html %}
@@ -161,6 +166,93 @@ fig=px.scatter(no_sex_500, x="Average_Age", y="count", log_y=True, size="count",
 fig.show()
 ```
 
+### How old is a person according to their name
+
+A good website to visualize this is available here [Predict age by name](https://www.ekintzler.com/projects/age-prediction/) . 
+I will recreate the process in python. 
+
+INSEE makes available the number of people born each year since 1900 according to their first name , INSEE also keep track of age expectancy every year. 
+[First names in France](https://www.insee.fr/fr/statistiques/2540004?sommaire=4767262)
+[Mortality tables](https://www.insee.fr/fr/statistiques/3311422?sommaire=3311425#consulter-sommaire)
+
+The mortality tables only calculate life expectancy up to 105 years while the first name database does not report deaths and would technically keep track of people up to 121 years old. For simplification purposes, I assumed that from 105 years and over the percentage of people alive would be the same although it is much more likely to be decreasing drastically. 
+
+To load the data I used the following code: 
+
+``` python
+df_naissance=pd.read_csv("../raw_data/nat2020.csv", sep=";")
+mortality=pd.read_csv("../raw_data/mortality.csv")
+mortality["pop"]=[mortality["pop"][i].replace(" ", "") for i in range (mortality.shape[0])]
+mortality["pop"]=mortality["pop"].astype("int64")
+mortality["deaths"]=[mortality["deaths"][i].replace(" ", "") for i in range (mortality.shape[0])]
+mortality["deaths"]=mortality["deaths"].astype("int64")
+mortality["alive_percent"]=(mortality["pop"])/1000
+df_naissance.annais.replace("XXXX", np.nan, inplace=True)
+df_naissance.preusuel.replace("_PRENOMS_RARES", np.nan, inplace=True)
+df_naissance.dropna(inplace=True)
+df_naissance["annais"]=df_naissance["annais"].astype("int64")
+df_naissance["age_virtuel"]=2021-df_naissance["annais"]
+```
+In order to calculate the expected number of people alive depending on their year of birth and the mortality tables, I used the following function: 
+
+``` python
+def funcA(d, nombre):
+    if d >=105:
+      return nombre*0.246/100
+    return nombre*mortality.loc[d, "alive_percent"]/100
+def funcB(d, nombre):
+    if d >=105:
+      return nombre*0.916/100
+    return nombre*mortality.loc[d+104, "alive_percent"]/100
+
+df_naissance['nombre_weight'] = df_naissance.apply(lambda x: funcA(x['age_virtuel'],x["nombre"]) if x['sexe'] == 1 else funcB(x['age_virtuel'], x["nombre"]), axis=1)
+df_naissance["age_multi"]=df_naissance["age_virtuel"]*df_naissance["nombre_weight"]
+
+```
+
+And this lead for example with the first name Grégoire to display the average age:
+
+``` python
+plt.figure(figsize=(50,10))
+plt.xticks(rotation='vertical')
+sns.barplot(data=df_naissance[(df_naissance["preusuel"]=="GRÉGOIRE") & (df_naissance["sexe"]==1) ], x="age_virtuel", y="nombre_weight" ,dodge=False)
+```
+![Gregoire](gregoire.png)
+
+
+It is possible to estimate the average age of someone according to their name as well as the number of person who would be expected to die this year according to how many were born since 1900 but the approximation is a bit off.  
+
+Using the following code: 
+
+``` python
+import unidecode
+# Calculating the difference in number of people if it was the next year
+df_naissance['nombre_weight_plus1'] = df_naissance.apply(lambda x: funcA(x['age_virtuel']+1,x["nombre"]) if x['sexe'] == 1 else funcB(x['age_virtuel']+1, x["nombre"]), axis=1)
+
+# grouping data by first name
+estimation=df_naissance.groupby(["preusuel", "sexe"], as_index=False).agg({"sexe":"mean", "annais":"mean","nombre":"sum","age_virtuel":["mean","std"], "nombre_weight": "sum", "age_multi":["sum","mean","std"],"nombre_weight_plus1":"sum",
+ "nombre_weight_minus1":"sum","expected_adjusted_number":"sum"  }) 
+estimation.columns = ['_'.join(col) for col in estimation.columns]
+test.reset_index(inplace=True)
+
+# Dropping accentuated and special characters to match the other csv entries
+test["prenom"]=test["preusuel_"].apply(lambda x: unidecode.unidecode(x))
+test["true_age_mean"]=test["age_multi_sum"]/test["nombre_weight_sum"]
+test["expected_number_deaths"]=round((test["nombre_weight_sum"]-test["nombre_weight_plus1_sum"]), 0)
+test2=test.sort_values("nombre_sum", ascending=False)
+test2.drop_duplicates(subset="prenom", keep="first", inplace=True)
+# Making dictionaries to match first name to estimated age and estimated deaths
+prenom_dict={k:v for k,v in zip(test["prenom"], test["true_age_mean"])}
+prenom_dict_deaths={k:v for k,v in zip(test2["prenom"], test2["expected_number_deaths"])}
+
+# Passing the dictionaries to the subset data made earlier
+data5["true_age_mean"]=data5["prenom"].apply(lambda x: prenom_dict[x] if x in prenom_dict.keys() else np.nan)
+data5["expected_deaths"]=data5["prenom"].apply(lambda x: prenom_dict_deaths[x] if x in prenom_dict_deaths.keys() else np.nan)
+```
+
+### Mapping age of deaths to location in France
+
+
 It is possible to map the average age death to geographical division in France.
 Here I associated it with the communes location, although the result is a bit too dense to be easily readable.
 
@@ -216,15 +308,15 @@ fig.show()
 ```
 
 
-[Predict age by name](https://www.ekintzler.com/projects/age-prediction/)
+
 <!-- 
 <iframe src=https://grelebr.github.io/deces_2020/choropleth.html style="width: 500px;
 height: 800px; border: 0px"></iframe> -->
 
 
-[Choropleth on GitHub](https://grelebr.github.io/deces_2020/choropleth.html)
+<!-- [Choropleth on GitHub](https://grelebr.github.io/deces_2020/choropleth.html)
 
-[Choropleth on Heroku](https://choropleth-greg.herokuapp.com/)
+[Choropleth on Heroku](https://choropleth-greg.herokuapp.com/) -->
 
 [Insee files](https://www.insee.fr/fr/information/2560452)
 
