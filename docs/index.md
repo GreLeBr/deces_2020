@@ -233,14 +233,14 @@ df_naissance['nombre_weight_plus1'] = df_naissance.apply(lambda x: funcA(x['age_
 estimation=df_naissance.groupby(["preusuel", "sexe"], as_index=False).agg({"sexe":"mean", "annais":"mean","nombre":"sum","age_virtuel":["mean","std"], "nombre_weight": "sum", "age_multi":["sum","mean","std"],"nombre_weight_plus1":"sum",
  "nombre_weight_minus1":"sum","expected_adjusted_number":"sum"  }) 
 estimation.columns = ['_'.join(col) for col in estimation.columns]
-test.reset_index(inplace=True)
+estimation.reset_index(inplace=True)
 
 # Dropping accentuated and special characters to match the other csv entries
-test["prenom"]=test["preusuel_"].apply(lambda x: unidecode.unidecode(x))
-test["true_age_mean"]=test["age_multi_sum"]/test["nombre_weight_sum"]
-test["expected_number_deaths"]=round((test["nombre_weight_sum"]-test["nombre_weight_plus1_sum"]), 0)
-test2=test.sort_values("nombre_sum", ascending=False)
-test2.drop_duplicates(subset="prenom", keep="first", inplace=True)
+estimation["prenom"]=estimation["preusuel_"].apply(lambda x: unidecode.unidecode(x))
+estimation["true_age_mean"]=estimation["age_multi_sum"]/estimation["nombre_weight_sum"]
+estimation["expected_number_deaths"]=round((estimation["nombre_weight_sum"]-estimation["nombre_weight_plus1_sum"]), 0)
+estimation2=estimation.sort_values("nombre_sum", ascending=False)
+estimation2.drop_duplicates(subset="prenom", keep="first", inplace=True)
 # Making dictionaries to match first name to estimated age and estimated deaths
 prenom_dict={k:v for k,v in zip(test["prenom"], test["true_age_mean"])}
 prenom_dict_deaths={k:v for k,v in zip(test2["prenom"], test2["expected_number_deaths"])}
@@ -248,7 +248,201 @@ prenom_dict_deaths={k:v for k,v in zip(test2["prenom"], test2["expected_number_d
 # Passing the dictionaries to the subset data made earlier
 data5["true_age_mean"]=data5["prenom"].apply(lambda x: prenom_dict[x] if x in prenom_dict.keys() else np.nan)
 data5["expected_deaths"]=data5["prenom"].apply(lambda x: prenom_dict_deaths[x] if x in prenom_dict_deaths.keys() else np.nan)
+data5["diff_age"]=data5["Average_Age"]-data5["true_age_mean"]
+data5["diff_deaths"]=data5["count"]-data5["expected_deaths"]
+data5[data5["paysnaiss"]=="FRANCE"].sort_values("count", ascending=False)
 ```
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>index</th>
+      <th>prenom</th>
+      <th>paysnaiss</th>
+      <th>sex</th>
+      <th>Average_Age</th>
+      <th>Age_Std</th>
+      <th>count</th>
+      <th>true_age_mean</th>
+      <th>diff_age</th>
+      <th>expected_deaths</th>
+      <th>diff_deaths</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>9220</th>
+      <td>9220</td>
+      <td>JEAN</td>
+      <td>FRANCE</td>
+      <td>1</td>
+      <td>81.427231</td>
+      <td>9.981261</td>
+      <td>26590</td>
+      <td>71.496793</td>
+      <td>9.930438</td>
+      <td>31118.0</td>
+      <td>-4528.0</td>
+    </tr>
+    <tr>
+      <th>31809</th>
+      <td>31809</td>
+      <td>MARIE</td>
+      <td>FRANCE</td>
+      <td>2</td>
+      <td>87.370109</td>
+      <td>10.065417</td>
+      <td>23119</td>
+      <td>64.167322</td>
+      <td>23.202787</td>
+      <td>26032.0</td>
+      <td>-2913.0</td>
+    </tr>
+    <tr>
+      <th>12938</th>
+      <td>12938</td>
+      <td>MICHEL</td>
+      <td>FRANCE</td>
+      <td>1</td>
+      <td>77.991489</td>
+      <td>9.980199</td>
+      <td>13106</td>
+      <td>77.510527</td>
+      <td>0.480962</td>
+      <td>15077.0</td>
+      <td>-1971.0</td>
+    </tr>
+    <tr>
+      <th>1534</th>
+      <td>1534</td>
+      <td>ANDRE</td>
+      <td>FRANCE</td>
+      <td>1</td>
+      <td>84.324293</td>
+      <td>9.302870</td>
+      <td>10340</td>
+      <td>83.527396</td>
+      <td>0.796897</td>
+      <td>11602.0</td>
+      <td>-1262.0</td>
+    </tr>
+    <tr>
+      <th>15072</th>
+      <td>15072</td>
+      <td>PIERRE</td>
+      <td>FRANCE</td>
+      <td>1</td>
+      <td>83.212907</td>
+      <td>10.771183</td>
+      <td>10169</td>
+      <td>74.677724</td>
+      <td>8.535182</td>
+      <td>11746.0</td>
+      <td>-1577.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>32121</th>
+      <td>32121</td>
+      <td>MARIE-LAURE</td>
+      <td>FRANCE</td>
+      <td>2</td>
+      <td>60.753077</td>
+      <td>12.772656</td>
+      <td>91</td>
+      <td>49.978790</td>
+      <td>10.774287</td>
+      <td>86.0</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>25843</th>
+      <td>25843</td>
+      <td>FELICIE</td>
+      <td>FRANCE</td>
+      <td>2</td>
+      <td>90.725333</td>
+      <td>7.664114</td>
+      <td>90</td>
+      <td>15.246389</td>
+      <td>75.478945</td>
+      <td>100.0</td>
+      <td>-10.0</td>
+    </tr>
+    <tr>
+      <th>1026</th>
+      <td>1026</td>
+      <td>ALEX</td>
+      <td>FRANCE</td>
+      <td>1</td>
+      <td>64.708222</td>
+      <td>20.002979</td>
+      <td>90</td>
+      <td>24.057174</td>
+      <td>40.651049</td>
+      <td>126.0</td>
+      <td>-36.0</td>
+    </tr>
+    <tr>
+      <th>23496</th>
+      <td>23496</td>
+      <td>CLEMENTINE</td>
+      <td>FRANCE</td>
+      <td>2</td>
+      <td>90.814944</td>
+      <td>12.831586</td>
+      <td>89</td>
+      <td>25.975736</td>
+      <td>64.839207</td>
+      <td>106.0</td>
+      <td>-17.0</td>
+    </tr>
+    <tr>
+      <th>31910</th>
+      <td>31910</td>
+      <td>MARIE-ANTOINETTE</td>
+      <td>FRANCE</td>
+      <td>2</td>
+      <td>83.652360</td>
+      <td>12.100183</td>
+      <td>89</td>
+      <td>67.762314</td>
+      <td>15.890046</td>
+      <td>86.0</td>
+      <td>3.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>427 rows × 11 columns</p>
+</div>
+
 
 ### Mapping age of deaths to location in France
 
