@@ -1,4 +1,4 @@
-## Analyzing deaths in France in 2020
+## Deaths in France in 2020
 
 * The [National Institute of Statistics and Economic Studies](https://www.insee.fr/en/accueil) 
 releases public available data on deaths in France every year. It is a popular datafile to work with and there are many projects using and tools available to explore the file at [data.gouv.fr](https://www.data.gouv.fr/fr/datasets/fichier-des-personnes-decedees/)
@@ -89,6 +89,29 @@ bar_plot.text(50000, 20, "Men", fontsize=25,bbox=props )
 bar_plot.text(-50000, 20, "Women", fontsize=25, bbox=props )
 
 ``` 
+
+Following popular blog [Le prénom : catégorie sociale](http://coulmont.com/bac/index.html)
+I plotted first_name by age of deaths as well as last_name by age of death.
+
+With the first name for people born in France:
+
+[First_name](https://chart-studio.plotly.com/~GreLeBr/13)
+
+
+for people born abroad: 
+
+[First_name_abroad](https://chart-studio.plotly.com/~GreLeBr/3)
+
+With the last name :
+
+[Last_name](https://chart-studio.plotly.com/~GreLeBr/11)
+
+
+Code is as follow :
+
+```python
+
+```
 
 [Predict age by name](https://www.ekintzler.com/projects/age-prediction/)
 <!-- 
