@@ -178,15 +178,18 @@ fig.show()
 
 As mentioned above not all first name are equal and some were more popular in the early 1900s and are not that popular anymore, some are more recents and others are experiencing a revival. 
 
-A good website to visualize this is available here [Predict age by name](https://www.ekintzler.com/projects/age-prediction/) . 
+* A website to visualize this is available here [Predict age by name](https://www.ekintzler.com/projects/age-prediction/) . 
 
-I will recreate the process in python. You can play with it using my mini heroku app [prenom_age](https://prenomage2020.herokuapp.com/)
+* I will recreate the process in python. You can play with it using my mini heroku app 
+-> [prenom_age](https://prenomage2020.herokuapp.com/)
+
+# Method:
 
 INSEE makes available the number of people born each year since 1900 according to their first name , INSEE also keep track of age expectancy every year. 
 [First names in France](https://www.insee.fr/fr/statistiques/2540004?sommaire=4767262)
 [Mortality tables](https://www.insee.fr/fr/statistiques/3311422?sommaire=3311425#consulter-sommaire)
 
-The mortality tables only calculate life expectancy up to 105 years while the first name database does not report deaths and would technically keep track of people up to 121 years old. For simplification purposes, I assumed that from 105 years and over the percentage of people alive would be the same although it is much more likely to be decreasing drastically. 
+* The mortality tables only calculate life expectancy up to 105 years while the first name database does not report deaths and would technically keep track of people up to 121 years old. For simplification purposes, I assumed that from 105 years and over the percentage of people alive would be the same although it is much more likely to be decreasing drastically. 
 
 To load the data I used the following code: 
 
@@ -207,7 +210,7 @@ df_naissance.dropna(inplace=True)
 df_naissance["annais"]=df_naissance["annais"].astype("int64")
 df_naissance["age_virtuel"]=2021-df_naissance["annais"]
 ```
-In order to calculate the expected number of people alive depending on their year of birth and the mortality tables, I used the following function: 
+* In order to calculate the expected number of people alive depending on their year of birth and the mortality tables, I used the following function: 
 
 ``` python
 def funcA(d, nombre):
@@ -234,7 +237,7 @@ sns.barplot(data=df_naissance[(df_naissance["preusuel"]=="GRÉGOIRE") & (df_nais
 ![Gregoire](gregoire.png)
 
 
-It is possible to estimate the average age of someone according to their name as well as the number of person who would be expected to die this year according to how many were born since 1900 but the approximation is a bit off.  
+* It is possible to estimate the average age of someone according to their name as well as the number of person who would be expected to die this year according to how many were born since 1900 but the approximation is a bit off.  
 
 Using the following code: 
 
