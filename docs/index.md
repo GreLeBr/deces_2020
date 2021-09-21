@@ -103,19 +103,19 @@ Using first name:
 <!-- [First_name](https://chart-studio.plotly.com/~GreLeBr/13) -->
 
 
-and specficically for people born abroad: 
+For people born abroad: 
 {% include prenom_horsfrance.html %}
 <!-- [First_name_abroad](https://chart-studio.plotly.com/~GreLeBr/3) -->
 
-With the last name :
+Using last name:
 {% include nom.html %}
 <!-- [Last_name](https://chart-studio.plotly.com/~GreLeBr/11) -->
 
-and included the gender
+and included the gender with the last name:
 {% include nom_sex.html %}
 
 
-Code is as follow :
+Code is as follow:
 
 ```python
 # Separating first and last names
@@ -176,8 +176,11 @@ fig.show()
 
 ### How old is a person according to their name
 
+As mentioned above not all first name are equal and some were more popular in the early 1900s and are not that popular anymore, some are more recents and others are experiencing a revival. 
+
 A good website to visualize this is available here [Predict age by name](https://www.ekintzler.com/projects/age-prediction/) . 
-I will recreate the process in python. 
+
+I will recreate the process in python. You can play with it using my mini heroku app [prenom_age](https://prenomage2020.herokuapp.com/)
 
 INSEE makes available the number of people born each year since 1900 according to their first name , INSEE also keep track of age expectancy every year. 
 [First names in France](https://www.insee.fr/fr/statistiques/2540004?sommaire=4767262)
@@ -230,7 +233,6 @@ sns.barplot(data=df_naissance[(df_naissance["preusuel"]=="GRÉGOIRE") & (df_nais
 ```
 ![Gregoire](gregoire.png)
 
-You can play with it using my  mini heroku app [prenom_age](https://prenomage2020.herokuapp.com/)
 
 It is possible to estimate the average age of someone according to their name as well as the number of person who would be expected to die this year according to how many were born since 1900 but the approximation is a bit off.  
 
