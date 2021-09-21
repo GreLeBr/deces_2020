@@ -95,7 +95,7 @@ bar_plot.text(-50000, 20, "Women", fontsize=25, bbox=props )
 Following popular blog [Le prénom : catégorie sociale](http://coulmont.com/bac/index.html) ,
 I plotted first_name by age of deaths as well as last_name by age of death.
 
-HOWEVER !!! These vizualisations need to be taken with a big grain of salts as not all first_name are equivalent. Some names were popular in the early 20th century while other are more recents and it has a direct effect on the average age of death associated with a first_name. 
+HOWEVER !!! These vizualisations need to be taken with a big grain of salt as first_names are not all equivalent. Some names were popular in the early 20th century while other are more recents and it has a direct effect on the average age of death associated with a first_name. 
 I will describe this issue in more details further down the page. 
 
 Using first name:
