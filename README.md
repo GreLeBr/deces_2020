@@ -1,3 +1,5 @@
+Page available at : [page with graphs](https://grelebr.github.io/deces_2020/)
+
 # Data analysis
 - Document here the project: deces_2020
 - Description: Deaths in 2020 in FRANCE

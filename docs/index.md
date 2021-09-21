@@ -219,6 +219,7 @@ sns.barplot(data=df_naissance[(df_naissance["preusuel"]=="GRÉGOIRE") & (df_nais
 ```
 ![Gregoire](gregoire.png)
 
+You can play with it using my  mini heroku app [prenom_age](https://prenomage2020.herokuapp.com/)
 
 It is possible to estimate the average age of someone according to their name as well as the number of person who would be expected to die this year according to how many were born since 1900 but the approximation is a bit off.  
 
