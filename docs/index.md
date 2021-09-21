@@ -502,6 +502,33 @@ fig.show()
 
 ```
 
+And for a less busy figure, using departments only
+
+{% include choropleth_dep.html %}
+
+Code is as follow:
+
+``` python
+# Loading the geojson file for department
+with open("../raw_data/departement.json") as json_file:
+  deparjson = json.load(json_file)
+# Making a dictionary for department equivalent to communes zip codes
+communes_dept_dict={k:v for k,v in zip (communes["COM"],communes["DEP"])}
+df["dep"]=df["lieunaiss_str"].apply(lambda x: communes_dept_dict[x] if x in communes_dept_dict.keys() else np.nan)
+# Drawing the picture
+fig=px.choropleth_mapbox(df_dep, geojson=deparjson, locations="dep", featureidkey="properties.INSEE_DEP", color="lifespan_mean",
+                           color_continuous_scale="Viridis",
+                           range_color=(75, 85),
+                           mapbox_style="carto-positron",
+                           center=dict(lat=46.2276, lon=2.2137), zoom=3,
+                           opacity=0.5                    
+                          )
+fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+fig.show()
+
+```
+
+
 
 
 <!-- 
