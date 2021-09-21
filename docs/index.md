@@ -118,6 +118,14 @@ and included the gender
 Code is as follow :
 
 ```python
+# Separating first and last names
+df["nomprenomsplit"]=df["nomprenom"].apply(lambda x: x.split("*"))
+df["nom"]=df["nomprenomsplit"].apply(lambda x: x[0])
+df["prenoms"]=df["nomprenomsplit"].apply(lambda x: x[1])
+df["prenom_split"]=df["prenoms"].apply(lambda x: x.split(" "))
+df["first_name"]=df["prenom_split"].apply(lambda x: x[0])
+df["first_name"]=df["first_name"].apply(lambda x: x.replace("/", ""))
+
 # Grouping data according to first name, gender and country of birth
 data4=df.groupby(['sexe',"first_name", "paysnaiss"], as_index=False)[["sexe", "lifespan"]]
 .agg({"sexe": "mean", "lifespan": ["mean", "std", "count"]})
@@ -180,13 +188,16 @@ The mortality tables only calculate life expectancy up to 105 years while the fi
 To load the data I used the following code: 
 
 ``` python
+# Reading the csvs
 df_naissance=pd.read_csv("../raw_data/nat2020.csv", sep=";")
 mortality=pd.read_csv("../raw_data/mortality.csv")
+# Cleaning the mortality file and calculating percentage of people alive per year of birth
 mortality["pop"]=[mortality["pop"][i].replace(" ", "") for i in range (mortality.shape[0])]
 mortality["pop"]=mortality["pop"].astype("int64")
 mortality["deaths"]=[mortality["deaths"][i].replace(" ", "") for i in range (mortality.shape[0])]
 mortality["deaths"]=mortality["deaths"].astype("int64")
 mortality["alive_percent"]=(mortality["pop"])/1000
+# cleaning the original csv and calculating the virtual age
 df_naissance.annais.replace("XXXX", np.nan, inplace=True)
 df_naissance.preusuel.replace("_PRENOMS_RARES", np.nan, inplace=True)
 df_naissance.dropna(inplace=True)
@@ -253,6 +264,8 @@ data5["diff_age"]=data5["Average_Age"]-data5["true_age_mean"]
 data5["diff_deaths"]=data5["count"]-data5["expected_deaths"]
 data5[data5["paysnaiss"]=="FRANCE"].sort_values("count", ascending=False)
 ```
+This is how the dataframe will look like:
+
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -528,27 +541,6 @@ fig.show()
 
 ```
 
-
-
-
-<!-- 
-<iframe src=https://grelebr.github.io/deces_2020/choropleth.html style="width: 500px;
-height: 800px; border: 0px"></iframe> -->
-
-
-<!-- [Choropleth on GitHub](https://grelebr.github.io/deces_2020/choropleth.html)
-
-[Choropleth on Heroku](https://choropleth-greg.herokuapp.com/) -->
-
 [Insee files](https://www.insee.fr/fr/information/2560452)
 
 
-
-
-``` python
-# Splitting First name and last name
-df["nomprenomsplit"]=df["nomprenom"].apply(lambda x: x.split("*"))
-df["nom"]=df["nomprenomsplit"].apply(lambda x: x[0])
-df["prenom"]=df["nomprenomsplit"].apply(lambda x: x[1])
-df["prenom"]=df["prenom"].apply(lambda x: x.replace("/", ""))
-``` 
